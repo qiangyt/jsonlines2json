@@ -1,0 +1,6 @@
+language: go
+dist: bionic
+go:
+  - '1.13'
+  - '1.14'
+
