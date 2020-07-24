@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"encoding/json"
 	"fmt"
 	"io"
 	"log"
@@ -13,43 +12,31 @@ import (
 	"github.com/qiangyt/jsonlines2json/util"
 )
 
-// JSONLine ...
-type JSONLine = map[string]interface{}
-
-// ParseRawLine ...
-func ParseRawLine(lineNo int, rawLine string) JSONLine {
-	r := make(JSONLine)
-
+// ConvertRawLine ...
+func ConvertRawLine(lineNo int, rawLine string) string {
 	line := strings.TrimSpace(rawLine)
 	if len(line) == 0 {
 		log.Printf("line %d is blank\n", lineNo)
-		return nil
+		return ""
 	}
 
 	posOfLeftBracket := strings.IndexByte(line, '{')
 	if posOfLeftBracket < 0 {
 		log.Printf("line %d is not JSON line: <%s>\n", lineNo, rawLine)
-		return nil
+		return ""
 	}
-	if posOfLeftBracket > 0 {
-		line = line[posOfLeftBracket:]
+	posOfRightBracket := strings.LastIndexByte(line, '}')
+	if posOfRightBracket < 0 {
+		log.Printf("line %d is not JSON line: <%s>\n", lineNo, rawLine)
+		return ""
 	}
-
-	if err := json.Unmarshal([]byte(line), &r); err != nil {
-		line = strings.ReplaceAll(line, "\\\"", "\"")
-		if err := json.Unmarshal([]byte(line), &r); err != nil {
-			log.Printf("failed to parse line %d: <%s>\n\treason %v\n", lineNo, rawLine, errors.Wrap(err, ""))
-			return r
-		}
-	}
-
-	return r
+	return line[posOfLeftBracket : posOfRightBracket+1]
 }
 
 // ProcessRawLine ...
 func ProcessRawLine(first bool, lineNo int, rawLine string) bool {
-	jl := ParseRawLine(lineNo, rawLine)
-	if jl == nil {
+	jl := ConvertRawLine(lineNo, rawLine)
+	if len(jl) == 0 {
 		return false
 	}
 
@@ -57,17 +44,11 @@ func ProcessRawLine(first bool, lineNo int, rawLine string) bool {
 		return false
 	}
 
-	output, err := json.Marshal(jl)
-	if err != nil {
-		log.Printf("failed to marshal line %d: <%s>\n\treason %v\n", lineNo, rawLine, errors.Wrap(err, ""))
-		return false
-	}
-
 	if !first {
 		fmt.Print(", ")
 	}
 
-	fmt.Println(string(output))
+	fmt.Println(jl)
 	return true
 }
 
