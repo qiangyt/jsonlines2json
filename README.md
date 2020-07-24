@@ -1,15 +1,13 @@
 # jsonlines2json
 Tool to convert JSON lines to array of JSON objects
 
-# Background
+# Why
 
-1. What's JSON Lines
-
-JSON line is lines of JSON but not valid JSON. See http://jsonlines.org/
+JSON line (http://jsonlines.org/) is used in logging and data processing, however, JSON line is not valid JSON so cannot be parsed by regular JSON parser. See 
 
 > JSON Lines is a convenient format for storing structured data that may be processed one record at a time. It works well with unix-style text processing tools and shell pipelines. It's a great format for log files. It's also a flexible format for passing messages between cooperating processes.
 
-2. This tool doesn't do anything other than conversion. Since the output is valid JSON (array), there're many tools we could use to do further processing upon the output, for example., ```jq```
+This tool does nothing than conversion - what it outputs is valid JSON array, each line of JSON is converted to an object of the whole JSON array, so we could use other JSON tools to do further processing, for example., ```jq```
 
 3. For JSON log (AKA structured log) tool, see https://github.com/qiangyt/jog
 
