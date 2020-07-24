@@ -14,7 +14,7 @@ This tool does nothing than conversion - its output is a valid JSON array, each 
 # Features
 
 - Read JSON line file, convert the content and output as an array of JSON objects, to stdout
-- Able to ignore non-JSON prefix in a line but keep converting remaining of a line
+- Able to ignore non-JSON prefix and suffix in a line but keep converting remaining of that line
 - Able to ignore completely-non-JSON line
 - Outputs an empty JSON array, even no lines input or parsing failure
 
